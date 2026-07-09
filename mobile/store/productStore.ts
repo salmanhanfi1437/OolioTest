@@ -146,21 +146,21 @@ export const useProductStore = create<ProductState>((set, get) => ({
         ),
       }));
     }
-   catch (e: any) {
-  if (e.error === "version_conflict") {
-    console.log("Version conflict detected");
+    catch (e: any) {
+      if (e.error === "version_conflict") {
+        console.log("Version conflict detected");
 
-    const syncResponse = await api.getSync(
-      get().lastSyncVersion
-    );
+        const syncResponse = await api.getSync(
+          get().lastSyncVersion
+        );
 
-    get().applySync(syncResponse);
+        get().applySync(syncResponse);
 
-    return;
-  }
+        return;
+      }
 
-  console.log(e);
-}
+      console.log(e);
+    }
   },
 
   applyRealtimeEvent: (event: SyncEvent) => {

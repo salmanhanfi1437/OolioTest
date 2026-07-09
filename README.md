@@ -123,11 +123,3 @@ See `mobile/native/README.md` for two optional native module challenges (Android
 - Partial submissions are welcome; document what you skipped and why
 
 **Time budget: 4–6 hours.**
-Task Done -
-
-1 - Load the Products List as changed the API URL with my config
-2 - flat list with onEndReached shown activity indicator as it was not visible when loaded loadNextPage 
-3 - Search text is not working as checked backend query paramter is not there  but i have made it local search 
-4 - product details page issue is with api so i have shown product details via products list by id
-5 -Add ApplyRealtimeEventSync for real time update
-6- Bum version is done as tested in Postman and virtual epos device.
