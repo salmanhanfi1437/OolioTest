@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect,useMemo } from 'react';
 import { FlatList, View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { ProductCard } from '@/components/ProductCard';
@@ -25,27 +25,29 @@ export default function ProductsScreen() {
 
   //------load product from async if no internet-----
 
- useEffect(() => {
-  const unsubscribe = NetInfo.addEventListener(async (state) => {
-    if (state.isConnected) {
-      console.log("Internet connected. Refreshing products...");
+useEffect(() => {
+  const unsubscribe = NetInfo.addEventListener((state) => {
+    if (!state.isConnected) return;
 
-      await loadProducts();
-
+    const syncProducts = async () => {
       try {
+        await loadProducts();
+
         const response = await api.getSync(
           useProductStore.getState().lastSyncVersion
         );
 
         applySync(response);
       } catch (e) {
-        console.log("Background sync failed", e);
+        console.log(e);
       }
-    }
+    };
+
+    syncProducts();
   });
 
   return unsubscribe;
-}, []);
+}, [loadProducts, applySync]);
 
 
 
@@ -72,9 +74,7 @@ export default function ProductsScreen() {
   });
 
   const handleEndReached = useCallback(() => {
-    console.log("End Reached");
-    console.log("Next Cursor:", nextCursor);
-
+   
     if (!searchResults) {
       loadNextPage();
     }
@@ -89,6 +89,30 @@ export default function ProductsScreen() {
     [addItem]
   );
 
+const memoizedProducts = useMemo(() => {
+    return products;
+  }, [products]);
+
+  const handlePress = useCallback((item) => {
+    console.log(item.id);
+  }, []);
+
+  const renderItem = useCallback(
+    ({ item }) => (
+      <ProductCard
+        product={item}
+        onPress={handlePress}
+      />
+    ),
+    [handlePress]
+  );
+
+  const keyExtractor = useCallback(
+    (item) => item.id.toString(),
+    []
+  );
+
+
   return (
     <View style={styles.container}>
       <SearchBar onResults={(r) => {
@@ -101,13 +125,11 @@ export default function ProductsScreen() {
       ) : (
         <FlatList
           data={displayProducts}
-          renderItem={({ item }) => (
-            <ProductCard
-              product={item}
-              onPress={(p) => router.push(`/product/${p.id}`)}
-              onAddToCart={handleAddToCart}
-            />
-          )}
+          keyExtractor={keyExtractor}
+         renderItem={renderItem}
+             initialNumToRender={10} //Render only first few items\
+             maxToRenderPerBatch={10} // controls how many items are rendered each batch
+             removeClippedSubviews={true} // it will unmount item which are not visible 
           onEndReached={handleEndReached}
           onEndReachedThreshold={0.3}
           ListFooterComponent={isLoading ? <View><ActivityIndicator color="#1976d2" /></View> : null}

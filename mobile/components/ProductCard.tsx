@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import type { Product } from '@/types';
+import { Image } from 'expo-image';
 
 const imageCache = new Map<string, string>();
 
@@ -19,7 +20,12 @@ export function ProductCard({ product, onPress, onAddToCart }: Props) {
 
   return (
     <TouchableOpacity style={styles.card} onPress={() => onPress?.(product)}>
-      <Image source={{ uri: imageUrl }} style={styles.image} />
+      <Image
+  source={imageUrl}
+  style={styles.image}
+  contentFit="cover"
+  cachePolicy="memory-disk"
+/>
       <View style={styles.info}>
         <Text style={styles.name} numberOfLines={2}>{product.name}</Text>
         <Text style={styles.price}>${product.price.toFixed(2)}</Text>

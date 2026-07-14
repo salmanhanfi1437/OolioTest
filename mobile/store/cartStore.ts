@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { api } from '@/services/api';
 import type { Cart, CartItem } from '@/types';
+import { ToastAndroid } from 'react-native';
 
 const DEVICE_ID_KEY = 'surat_device_id';
 
@@ -59,6 +60,8 @@ export const useCartStore = create<CartState>((set, get) => ({
       device_id: deviceId,
     });
     set({ cart });
+      ToastAndroid.show("Item added to cart", ToastAndroid.SHORT);
+
   },
 
   removeItem: async (productId) => {
