@@ -11,7 +11,7 @@ interface Props {
   onAddToCart?: (product: Product) => void;
 }
 
-export function ProductCard({ product, onPress, onAddToCart }: Props) {
+const ProductCardComponent = ({product,onPress,onAddToCart}: Props) => {
   const key = String(product.id);
   if (!imageCache.has(key)) {
     imageCache.set(key, `https://picsum.photos/seed/${product.id}/300/200`);
@@ -59,3 +59,4 @@ const styles = StyleSheet.create({
   addBtn: { padding: 12, justifyContent: 'center', backgroundColor: '#1976d2' },
   addBtnText: { color: '#fff', fontWeight: '700' },
 });
+ export const ProductCard = React.memo(ProductCardComponent)

@@ -10,9 +10,10 @@ Bugs Found -
 
 Tasks Completed
 1 - Updated the API configuration to use the correct IP address, allowing the application to successfully connect to the backend.
-2 - Flat list optimization with fixed pagination loading by displaying an ActivityIndicator while loadNextPage() is in progress.
-3 - For product image reapearing on scrolling uses React-expo-image. 
-4 - Implemented local product search on the client side since the backend does not provide a search API.
-5 - Resolved the Product Details screen by loading product details from the already-fetched product list using the product ID as a workaround for the backend API issue.
-6 - Implemented ApplyRealtimeEventSync to support real-time product updates across devices.
-7 -Fixed the Product Version Bump functionality and verified it using both Postman and the virtual EPOS device.
+2 - Product Card wrapped with React.memo to avpid reRendering
+3 - Flat list optimization with fixed pagination loading by displaying an ActivityIndicator while loadNextPage() is in progress.
+4 - For product image reapearing on scrolling uses React-expo-image. 
+5 - Implemented local product search on the client side since the backend does not provide a search API.
+6 - Resolved the Product Details screen by loading product details from the already-fetched product list using the product ID as a workaround for the backend API issue.
+7 - Implemented ApplyRealtimeEventSync to support real-time product updates across devices.
+8 -Fixed the Product Version Bump functionality and verified it using both Postman and the virtual EPOS device.

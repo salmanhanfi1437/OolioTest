@@ -74,8 +74,9 @@ useEffect(() => {
   });
 
   const handleEndReached = useCallback(() => {
-   
-    if (!searchResults) {
+    
+    if (!searchResults && nextCursor) //Suppose if nextCursor will be null then also loadNexPage will worked
+      {
       loadNextPage();
     }
   }, [searchResults, nextCursor, loadNextPage]);
@@ -93,9 +94,12 @@ const memoizedProducts = useMemo(() => {
     return products;
   }, [products]);
 
-  const handlePress = useCallback((item) => {
-    console.log(item.id);
-  }, []);
+const handlePress = useCallback(
+  (item: Product) => {
+    router.push(`/product/${item.id}`);
+  },
+  [router]
+);
 
   const renderItem = useCallback(
     ({ item }) => (
@@ -130,9 +134,10 @@ const memoizedProducts = useMemo(() => {
              initialNumToRender={10} //Render only first few items\
              maxToRenderPerBatch={10} // controls how many items are rendered each batch
              removeClippedSubviews={true} // it will unmount item which are not visible 
-          onEndReached={handleEndReached}
+          windowSize={5}
+             onEndReached={handleEndReached}
           onEndReachedThreshold={0.3}
-          ListFooterComponent={isLoading ? <View><ActivityIndicator color="#1976d2" /></View> : null}
+          ListFooterComponent={isLoading ? <ActivityIndicator color="#1976d2" /> : null}
           contentContainerStyle={styles.list}
         />
       )}
