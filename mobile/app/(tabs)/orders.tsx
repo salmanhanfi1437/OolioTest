@@ -1,39 +1,76 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { api } from '@/services/api';
 import { useCartStore } from '@/store/cartStore';
 import type { Order } from '@/types';
+import { useFocusEffect } from '@react-navigation/native';
+
 
 export default function OrdersScreen() {
   const [orders, setOrders] = useState<Order[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
+  const clearCart = useCartStore((s) => s.clearCart);
   const deviceId = useCartStore((s) => s.deviceId);
 
+  useFocusEffect(
+    useCallback(() => {
+      if (deviceId) {
+        loadOrders();
+      }
+    }, [deviceId])
+  );
+
   const loadOrders = async () => {
+    setRefreshing(true);
+
     try {
       const data = await api.getOrders(deviceId);
       setOrders(data);
     } catch {
-      Alert.alert('Error', 'Failed to load orders');
+      Alert.alert("Error", "Failed to load orders");
+    } finally {
+      setRefreshing(false);
     }
   };
 
   useEffect(() => {
+    console.log("Device ID:", deviceId);
+
     if (deviceId) loadOrders();
   }, [deviceId]);
+
+
+  useEffect(() => {
+    console.log("OrderScreen Mounted");
+
+    return () => {
+      console.log("Orders Unmounted");
+    };
+  }, []);
 
   const handlePay = async (orderId: number) => {
     try {
       const result = await api.payOrder(orderId);
+
+      if (
+        result.payment_status === 'success' ||
+        result.payment_status === 'failed'
+      ) {
+        clearCart();
+      }
+
       Alert.alert(
-        result.payment_status === 'success' ? 'Payment successful' : 'Payment failed',
+        result.payment_status === 'success'
+          ? 'Payment successful'
+          : 'Payment failed',
         `Order status: ${result.order_status}`
       );
+
       loadOrders();
     } catch {
       Alert.alert('Error', 'Payment request failed');
     }
   };
-
   const statusColor = (status: Order['status']) =>
     ({ draft: '#ff9800', paid: '#4caf50', failed: '#f44336' }[status]);
 
@@ -43,6 +80,7 @@ export default function OrdersScreen() {
       <FlatList
         data={orders}
         keyExtractor={(o) => String(o.id)}
+        showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
           <View style={styles.order}>
             <View>
@@ -63,7 +101,7 @@ export default function OrdersScreen() {
         )}
         ListEmptyComponent={<Text style={styles.empty}>No orders yet</Text>}
         onRefresh={loadOrders}
-        refreshing={false}
+        refreshing={refreshing}
       />
     </View>
   );

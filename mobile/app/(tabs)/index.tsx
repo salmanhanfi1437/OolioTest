@@ -13,7 +13,7 @@ import NetInfo from "@react-native-community/netinfo";
 import { api } from '@/services/api';
 
 export default function ProductsScreen() {
-  console.log("ProductsScreen Rendered");
+  
   const router = useRouter();
   const { products, isLoading, nextCursor, loadNextPage, loadProducts } = useProducts();
   const addItem = useCartStore((s) => s.addItem);
@@ -54,13 +54,12 @@ useEffect(() => {
   //--------------------------------------------
 
   useWebSocket((event: SyncEvent) => {
-    console.log('sync event', event);
     applyRealtimeEvent(event);
   });
 
 
   useAppState(async () => {
-    console.log("App resumed");
+    
 
     try {
       const response = await api.getSync(lastSyncVersion);
@@ -106,6 +105,7 @@ const handlePress = useCallback(
       <ProductCard
         product={item}
         onPress={handlePress}
+        onAddToCart={handleAddToCart}
       />
     ),
     [handlePress]
@@ -115,6 +115,14 @@ const handlePress = useCallback(
     (item) => item.id.toString(),
     []
   );
+
+  useEffect(() => {
+  console.log("ProductScreen Mounted");
+
+  return () => {
+    console.log("ProductScreen Unmounted");
+  };
+}, []);
 
 
   return (
@@ -131,6 +139,7 @@ const handlePress = useCallback(
           data={displayProducts}
           keyExtractor={keyExtractor}
          renderItem={renderItem}
+          showsVerticalScrollIndicator={false}
              initialNumToRender={10} //Render only first few items\
              maxToRenderPerBatch={10} // controls how many items are rendered each batch
              removeClippedSubviews={true} // it will unmount item which are not visible 

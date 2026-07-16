@@ -19,6 +19,8 @@ interface CartState {
   addItem: (productId: number, quantity: number, note?: string, scheduledDelivery?: string) => Promise<void>;
   removeItem: (productId: number) => Promise<void>;
   updateItem: (productId: number, quantity: number, note?: string) => Promise<void>;
+    clearCart: () => void;
+
 }
 
 export const useCartStore = create<CartState>((set, get) => ({
@@ -84,5 +86,10 @@ export const useCartStore = create<CartState>((set, get) => ({
       device_id: deviceId,
     });
     set({ cart });
+  },
+  clearCart: () => {
+    set({
+      cart: null,
+    });
   },
 }));

@@ -8,6 +8,12 @@ Bugs Found -
 7 - on Scrolling product simage is reappearing.
 8 -Product version bump functionality was not working correctly from either the Product Details screen or Postman, and proper error handling was missing.
 
+After adding to cart at cart screen there should be option to increase or decrease  the qty 
+At cart screen place order should work firstly generate txn id then go ahead with transaction if Internet gone then place it in asynstorage or sqlite when internet comes back check with status pending and send it to server at server end also needs to validate no double entry for smae txn id.
+
+after Product is aded to cart then seeing the order need to refresh ir instead used seFocuEffect.
+also need to remove the order once the order is  success
+
 Tasks Completed
 1 - Updated the API configuration to use the correct IP address, allowing the application to successfully connect to the backend.
 2 - Product Card wrapped with React.memo to avpid reRendering
@@ -17,3 +23,4 @@ Tasks Completed
 6 - Resolved the Product Details screen by loading product details from the already-fetched product list using the product ID as a workaround for the backend API issue.
 7 - Implemented ApplyRealtimeEventSync to support real-time product updates across devices.
 8 -Fixed the Product Version Bump functionality and verified it using both Postman and the virtual EPOS device.
+9 - Also when order is placed then its rmeoved from cart
